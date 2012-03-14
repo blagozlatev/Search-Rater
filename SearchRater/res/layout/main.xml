@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
@@ -9,17 +9,22 @@
         android:layout_height="wrap_content"
         android:text="@string/searchLabel" />
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textUri" />
+    <TableRow>
 
-    <ImageButton
-        android:id="@+id/btnSearchImg"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/search"
-        /> 
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:width="200dp"
+            android:inputType="textUri" />
 
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/btnSearchImg"
+            android:layout_width="left"
+            android:layout_height="wrap_content"
+            android:src="@drawable/search" 
+            />
+    </TableRow>
+
+</TableLayout>
