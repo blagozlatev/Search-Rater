@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -59,18 +60,24 @@ public class MainActivity extends Activity {
 							parseJSONForNameAndLink(googleJSONQueryResult);
 						}
 					}).start();
-					
-					ArrayList<String> titles = new ArrayList<String>();
-					for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
-						titles.add(bundledNamesAndLinks.get(i).getString(
-								"title"));
+
+					if (bundledNamesAndLinks.isEmpty()) {
+						Toast.makeText(getApplicationContext(),
+								"No more queries left for the day...",
+								Toast.LENGTH_LONG).show();
+					} else {
+						ArrayList<String> titles = new ArrayList<String>();
+						for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
+							titles.add(bundledNamesAndLinks.get(i).getString(
+									"title"));
+						}
+						ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+								getBaseContext(),
+								android.R.layout.simple_list_item_multiple_choice,
+								titles);
+						list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+						list.setAdapter(adapter);
 					}
-					ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-							getBaseContext(),
-							android.R.layout.simple_list_item_multiple_choice,
-							titles);
-					list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-					list.setAdapter(adapter);
 				}
 			}
 		});
@@ -85,6 +92,7 @@ public class MainActivity extends Activity {
 				startActivity(i);
 			}
 		});
+
 	}
 
 	public static JSONObject connect(String url) {
@@ -109,6 +117,7 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}
 		return json;
+
 	}
 
 	public static String convertStreamToString(InputStream is) {
@@ -131,7 +140,7 @@ public class MainActivity extends Activity {
 		return sb.toString();
 	}
 
-	public static void parseJSONForNameAndLink(JSONObject json) {
+	public void parseJSONForNameAndLink(JSONObject json) {
 		bundledNamesAndLinks.clear();
 		try {
 			JSONArray jsonArray = json.getJSONArray("items");
