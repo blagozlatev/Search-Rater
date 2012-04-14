@@ -17,19 +17,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ListView;
 
 public class MainActivity extends Activity {
 
 	static ArrayList<Bundle> bundledNamesAndLinks = new ArrayList<Bundle>();
-	int count = 0;
-	static String querySearch;
 	static JSONObject googleJSONQueryResult;
 
 	/** Called when the activity is first created. */
@@ -37,46 +39,50 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
 		final EditText editText = (EditText) findViewById(R.id.editText);
-		final TextView textv = (TextView) findViewById(R.id.textView);
-		Button nextButton = (Button) findViewById(R.id.btnNext);
+		final ListView list = (ListView) findViewById(R.id.resultList);
 
 		Button btnSearch = (Button) findViewById(R.id.btnSearch);
 		btnSearch.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 				if (!editText.getText().equals("")) {
-					String baseLinkForSearch = "https://www.googleapis.com/customsearch/v1?key=AIzaSyBJWWAjCjFy-JnrYYkwDJJwrUwJYtzEDTk&cx=013036536707430787589:_pqjad5hr1a&q=";
-					String endLinkForSearch = "&alt=json";
-					
-					querySearch = baseLinkForSearch + editText.getText()
-							+ endLinkForSearch;
-					querySearch = querySearch.replaceAll("\\s+", "%20");
-					googleJSONQueryResult = connect(querySearch);
-					parseJSONForNameAndLink(googleJSONQueryResult);
+					new Thread(new Runnable() {
+						public void run() {
+							String baseLinkForSearch = "https://www.googleapis.com/customsearch/v1?key=AIzaSyBJWWAjCjFy-JnrYYkwDJJwrUwJYtzEDTk&cx=013036536707430787589:_pqjad5hr1a&q=";
+							String endLinkForSearch = "&alt=json";
+							String querySearch = baseLinkForSearch
+									+ editText.getText() + endLinkForSearch;
+							querySearch = querySearch.replaceAll("\\s+", "%20");
+							googleJSONQueryResult = connect(querySearch);
+							parseJSONForNameAndLink(googleJSONQueryResult);
+						}
+					}).start();
+					ArrayList<String> titles = new ArrayList<String>();
+					for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
+						titles.add(bundledNamesAndLinks.get(i).getString(
+								"title"));
+					}
+					ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+							getApplicationContext(),
+							android.R.layout.simple_list_item_multiple_choice,
+							titles);
+
+					list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+					list.setAdapter(adapter);
 				}
 			}
 		});
-		nextButton.setOnClickListener(new OnClickListener() {
 
-			public void onClick(View arg0) {
-				if (!bundledNamesAndLinks.isEmpty()
-						&& count < bundledNamesAndLinks.size()) {
-					textv.setText("Title: "
-							+ bundledNamesAndLinks.get(count).getString("title")
-							+ "\n" + "Link: "
-							+ bundledNamesAndLinks.get(count).getString("link"));
-					count++;
-				} else if (bundledNamesAndLinks.isEmpty()) {
-					Toast.makeText(getBaseContext(),
-							"The search did not return any results",
-							Toast.LENGTH_LONG).show();
-				} else {
-					Toast.makeText(getBaseContext(),
-							"There are no more results", Toast.LENGTH_LONG)
-							.show();
-				}
+		list.setOnItemClickListener(new OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Intent i = new Intent(android.content.Intent.ACTION_VIEW, Uri
+						.parse(bundledNamesAndLinks.get(position).getString(
+								"link")));
+				startActivity(i);
 			}
 		});
 	}

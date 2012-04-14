@@ -1,44 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView
+    <EditText
+        android:id="@+id/editText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Search" />
-    
+        android:inputType="textUri" />
 
-    <TableRow>
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/search" />
 
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:width="200dp"
-            android:inputType="textUri" />
+    <ListView
+        android:id="@+id/resultList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/btnSearch"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Search" />
-    </TableRow>
-	<TableRow >
-	    <TextView
-          	android:id="@+id/textView"
-        	android:layout_width="fill_parent"
-        	android:layout_height="wrap_content"
-        	android:maxWidth="190px"
-         />
-	</TableRow>
-	<TableRow >
-	    <Button
-            android:id="@+id/btnNext"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Next" />
-	</TableRow>
-</TableLayout>
+</LinearLayout>
