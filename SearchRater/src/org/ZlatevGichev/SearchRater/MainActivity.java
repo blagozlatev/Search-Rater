@@ -32,7 +32,6 @@ import android.widget.ListView;
 public class MainActivity extends Activity {
 
 	static ArrayList<Bundle> bundledNamesAndLinks = new ArrayList<Bundle>();
-	static JSONObject googleJSONQueryResult;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -50,6 +49,7 @@ public class MainActivity extends Activity {
 				if (!editText.getText().equals("")) {
 					new Thread(new Runnable() {
 						public void run() {
+							JSONObject googleJSONQueryResult;
 							String baseLinkForSearch = "https://www.googleapis.com/customsearch/v1?key=AIzaSyBJWWAjCjFy-JnrYYkwDJJwrUwJYtzEDTk&cx=013036536707430787589:_pqjad5hr1a&q=";
 							String endLinkForSearch = "&alt=json";
 							String querySearch = baseLinkForSearch
@@ -59,16 +59,16 @@ public class MainActivity extends Activity {
 							parseJSONForNameAndLink(googleJSONQueryResult);
 						}
 					}).start();
+					
 					ArrayList<String> titles = new ArrayList<String>();
 					for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
 						titles.add(bundledNamesAndLinks.get(i).getString(
 								"title"));
 					}
 					ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-							getApplicationContext(),
+							getBaseContext(),
 							android.R.layout.simple_list_item_multiple_choice,
 							titles);
-
 					list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 					list.setAdapter(adapter);
 				}
@@ -132,6 +132,7 @@ public class MainActivity extends Activity {
 	}
 
 	public static void parseJSONForNameAndLink(JSONObject json) {
+		bundledNamesAndLinks.clear();
 		try {
 			JSONArray jsonArray = json.getJSONArray("items");
 			for (int i = 0; i < jsonArray.length(); i++) {
