@@ -63,6 +63,8 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				if (!list.isItemChecked(position)) {
+					list.setItemChecked(position, true);
+				} else {
 					list.setItemChecked(position, false);
 					Intent i = new Intent(android.content.Intent.ACTION_VIEW,
 							Uri.parse(bundledNamesAndLinks.get(position)
