@@ -2,4 +2,7 @@
 <resources>
     <string name="app_name">Search Rater</string>
     <string name="search">Search</string>
+    <string name="enter_your_query">Enter your query</string>
+    <string name="retrieve_error">Didn\'t retrieve any results from Google</string>
+    
 </resources>

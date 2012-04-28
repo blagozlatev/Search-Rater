@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Search Rater</string>
     <string name="search">Търси</string>
+    <string name="enter_your_query">Въведете заявката си</string>
+    <string name="retrieve_error">Не бяха получени никакви резултати от Google</string>
 
 </resources>
