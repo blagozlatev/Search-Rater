@@ -35,8 +35,8 @@ public class MainActivity extends Activity {
 
 			public void onClick(View v) {
 				if (!editText.getText().equals("")) {
-					bundledNamesAndLinks = JSONHandlerClass.getResultsFromJSON(editText.getText()
-							.toString());
+					bundledNamesAndLinks = JSONHandler
+							.getResultsFromJSON(editText.getText().toString());
 					if (bundledNamesAndLinks.isEmpty()) {
 						Toast.makeText(getApplicationContext(),
 								R.string.retrieve_error, Toast.LENGTH_LONG)

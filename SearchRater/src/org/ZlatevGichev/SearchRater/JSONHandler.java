@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 
-public class JSONHandlerClass {
+public class JSONHandler {
 
 	private static JSONObject connectAndGetJSON(String searchQuery) {
 		String url = convertSearchQueryToURL(searchQuery);
@@ -89,8 +89,9 @@ public class JSONHandlerClass {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-		};
-		
+		}
+		;
+
 		return NamesAndLinksToReturn;
 	}
 }
