@@ -20,6 +20,10 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	static ArrayList<Bundle> bundledNamesAndLinks = new ArrayList<Bundle>();
+	private static final String TITLE = "title";
+	private static final String LINK = "link";
+	private static final String SEARCH_QUERY = "search_query";
+	DatabaseHandler db = new DatabaseHandler(this);
 
 	/** Called when the activity is first created. */
 	@Override
@@ -45,7 +49,7 @@ public class MainActivity extends Activity {
 						ArrayList<String> titles = new ArrayList<String>();
 						for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
 							titles.add(bundledNamesAndLinks.get(i).getString(
-									"title"));
+									TITLE));
 						}
 						ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 								getBaseContext(),
@@ -53,6 +57,17 @@ public class MainActivity extends Activity {
 								titles);
 						list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 						list.setAdapter(adapter);
+						ArrayList<String> blockedLinks = db.getAllContactsForQuery(editText.getText().toString());
+						if (!blockedLinks.isEmpty()) {
+							for (int i=0; i<blockedLinks.size();i++){
+								for (int k=0; k<bundledNamesAndLinks.size();k++){
+									if (blockedLinks.get(i).equals(bundledNamesAndLinks.get(k).getString(LINK))){
+										list.setItemChecked(k, true);
+									}
+								}
+							}
+						}
+						
 					}
 				}
 			}
@@ -68,7 +83,7 @@ public class MainActivity extends Activity {
 					list.setItemChecked(position, false);
 					Intent i = new Intent(android.content.Intent.ACTION_VIEW,
 							Uri.parse(bundledNamesAndLinks.get(position)
-									.getString("link")));
+									.getString(LINK)));
 					startActivity(i);
 				}
 			}
@@ -80,8 +95,14 @@ public class MainActivity extends Activity {
 					int position, long id) {
 				if (list.isItemChecked(position)) {
 					list.setItemChecked(position, false);
+					db.deleteLink(bundledNamesAndLinks.get(position).getString(
+							LINK));
 				} else {
 					list.setItemChecked(position, true);
+					db.addLink(
+							bundledNamesAndLinks.get(position).getString(
+									SEARCH_QUERY),
+							bundledNamesAndLinks.get(position).getString(LINK));
 				}
 				return true;
 			}
