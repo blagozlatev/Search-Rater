@@ -24,6 +24,8 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
+        public static final int dialog_message=0x7f040005;
+        public static final int dialog_title=0x7f040004;
         public static final int enter_your_query=0x7f040002;
         public static final int retrieve_error=0x7f040003;
         public static final int search=0x7f040001;

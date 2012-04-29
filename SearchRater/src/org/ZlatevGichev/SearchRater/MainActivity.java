@@ -3,6 +3,8 @@ package org.ZlatevGichev.SearchRater;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,21 +22,19 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	static ArrayList<Bundle> bundledNamesAndLinks = new ArrayList<Bundle>();
-	private static final String TITLE = "title";
-	private static final String LINK = "link";
-	private static final String SEARCH_QUERY = "search_query";
-	DatabaseHandler db = new DatabaseHandler(this);
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		instructionDialogCreator();
 
+		final DatabaseHandler db = new DatabaseHandler(this);
 		final EditText editText = (EditText) findViewById(R.id.editText);
 		final ListView list = (ListView) findViewById(R.id.resultList);
-
 		Button btnSearch = (Button) findViewById(R.id.btnSearch);
+
 		btnSearch.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
@@ -46,28 +46,13 @@ public class MainActivity extends Activity {
 								R.string.retrieve_error, Toast.LENGTH_LONG)
 								.show();
 					} else {
-						ArrayList<String> titles = new ArrayList<String>();
-						for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
-							titles.add(bundledNamesAndLinks.get(i).getString(
-									TITLE));
-						}
-						ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-								getBaseContext(),
-								android.R.layout.simple_list_item_single_choice,
-								titles);
-						list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-						list.setAdapter(adapter);
-						ArrayList<String> blockedLinks = db.getAllContactsForQuery(editText.getText().toString());
+						listSetter(list);
+						ArrayList<String> blockedLinks = db
+								.getAllContactsForQuery(editText.getText()
+										.toString());
 						if (!blockedLinks.isEmpty()) {
-							for (int i=0; i<blockedLinks.size();i++){
-								for (int k=0; k<bundledNamesAndLinks.size();k++){
-									if (blockedLinks.get(i).equals(bundledNamesAndLinks.get(k).getString(LINK))){
-										list.setItemChecked(k, true);
-									}
-								}
-							}
+							findMatchesAndSetListView(list, blockedLinks);
 						}
-						
 					}
 				}
 			}
@@ -82,8 +67,7 @@ public class MainActivity extends Activity {
 				} else {
 					list.setItemChecked(position, false);
 					Intent i = new Intent(android.content.Intent.ACTION_VIEW,
-							Uri.parse(bundledNamesAndLinks.get(position)
-									.getString(LINK)));
+							Uri.parse(getLinkFromBundle(position)));
 					startActivity(i);
 				}
 			}
@@ -95,18 +79,63 @@ public class MainActivity extends Activity {
 					int position, long id) {
 				if (list.isItemChecked(position)) {
 					list.setItemChecked(position, false);
-					db.deleteLink(bundledNamesAndLinks.get(position).getString(
-							LINK));
+					db.deleteLink(getLinkFromBundle(position));
 				} else {
 					list.setItemChecked(position, true);
-					db.addLink(
-							bundledNamesAndLinks.get(position).getString(
-									SEARCH_QUERY),
-							bundledNamesAndLinks.get(position).getString(LINK));
+					db.addLink(getSearchQueryForBundle(),
+							getLinkFromBundle(position));
 				}
 				return true;
 			}
 		});
 
+	}
+
+	private void instructionDialogCreator() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.dialog_title);
+		builder.setMessage(R.string.dialog_message);
+		builder.setPositiveButton(android.R.string.ok,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						return;
+					}
+				});
+		builder.create().show();
+	}
+
+	private void findMatchesAndSetListView(ListView list,
+			ArrayList<String> blockedLinks) {
+		for (int i = 0; i < blockedLinks.size(); i++) {
+			for (int k = 0; k < bundledNamesAndLinks.size(); k++) {
+				if (blockedLinks.get(i).equals(getLinkFromBundle(k))) {
+					list.setItemChecked(k, true);
+				}
+			}
+		}
+	}
+
+	private String getTitleForLink(int position) {
+		return bundledNamesAndLinks.get(position).getString("title");
+	}
+
+	private String getLinkFromBundle(int position) {
+		return bundledNamesAndLinks.get(position).getString("link");
+	}
+
+	private String getSearchQueryForBundle() {
+		return bundledNamesAndLinks.get(0).getString("search_query");
+	}
+
+	private void listSetter(ListView list) {
+		ArrayList<String> titles = new ArrayList<String>();
+		for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
+			titles.add(getTitleForLink(i));
+		}
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+				getBaseContext(),
+				android.R.layout.simple_list_item_single_choice, titles);
+		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		list.setAdapter(adapter);
 	}
 }
