@@ -6,5 +6,6 @@
     <string name="enter_your_query">Въведете заявката си</string>
     <string name="retrieve_error">Не бяха получени никакви резултати от Google</string>
     <string name="dialog_message">За да блокирате или отблокирате резултат просто го задръжте. За да отворите резултат просто го натиснете.</string>
+    <string name="dialog_title">Инструкции</string>
 
 </resources>
