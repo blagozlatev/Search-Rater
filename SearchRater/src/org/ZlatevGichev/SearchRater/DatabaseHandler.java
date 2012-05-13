@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	private static final int DATABASE_VERSION = 1;
@@ -22,7 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	@Override
-	public void onCreate(SQLiteDatabase db) {
+	public void onCreate(SQLiteDatabase db) { 
 		String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_BLOCKED_RESULTS
 				+ "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_SEARCH_QUERY
 				+ " TEXT," + KEY_LINK + " TEXT" + ")";
