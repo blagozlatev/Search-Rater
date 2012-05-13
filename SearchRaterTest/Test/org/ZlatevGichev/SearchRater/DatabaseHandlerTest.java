@@ -11,7 +11,7 @@ import android.test.AndroidTestCase;
 
 
 
-public class TestDatabaseHandlerTest extends AndroidTestCase {
+public class DatabaseHandlerTest extends AndroidTestCase {
 
 	private static final String TABLE_BLOCKED_RESULTS = "blocked_results";
 	private static final String KEY_SEARCH_QUERY = "search_query";
