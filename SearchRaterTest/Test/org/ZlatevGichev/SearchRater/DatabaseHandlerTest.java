@@ -28,6 +28,20 @@ public class DatabaseHandlerTest extends AndroidTestCase {
 	 }
 
 	@Test
+	public void testAddLink() throws Throwable {
+		String searchQuery = "blago";
+		String URL = "www.abv.bg";
+		databaseHandler1.addLink(searchQuery , URL);
+		setUp();
+		db = databaseHandler1.getWritableDatabase();
+		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_BLOCKED_RESULTS
+				+ " WHERE " + KEY_SEARCH_QUERY + "=" + "'" + searchQuery + "'", 
+				null);
+		assertTrue(cursor.moveToFirst());
+		db.close();
+	}
+
+	@Test
 	 public void testDeleteLink() throws Throwable {
 		 String searchQuery = "krasi"; 
 		 String URL = "www.google.com";
