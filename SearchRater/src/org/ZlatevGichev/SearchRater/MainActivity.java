@@ -115,15 +115,15 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private String getTitleForLink(int position) {
+	protected String getTitleForLink(int position) {
 		return bundledNamesAndLinks.get(position).getString("title");
 	}
 
-	private String getLinkFromBundle(int position) {
+	protected String getLinkFromBundle(int position) {
 		return bundledNamesAndLinks.get(position).getString("link");
 	}
 
-	private String getSearchQueryForBundle() {
+	protected String getSearchQueryForBundle() {
 		return bundledNamesAndLinks.get(0).getString("search_query");
 	}
 

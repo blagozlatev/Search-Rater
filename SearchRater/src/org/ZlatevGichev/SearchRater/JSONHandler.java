@@ -20,7 +20,7 @@ import android.os.Bundle;
 
 public class JSONHandler {
 
-	private static JSONObject connectAndGetJSON(String searchQuery) {
+	protected static JSONObject connectAndGetJSON(String searchQuery) {
 		String url = convertSearchQueryToURL(searchQuery);
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpGet httpget = new HttpGet(url);
@@ -45,7 +45,7 @@ public class JSONHandler {
 		return json;
 	}
 
-	private static String convertSearchQueryToURL(String searchQuery) {
+	protected static String convertSearchQueryToURL(String searchQuery) {
 		String baseUrl = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCZI07EqEqZJUOTX_yDGRFsuBzHseo3WRo&cx=013036536707430787589:_pqjad5hr1a&q=";
 		String endURL = "&alt=json";
 		String urlToReturn = baseUrl + searchQuery + endURL;
@@ -53,7 +53,7 @@ public class JSONHandler {
 		return urlToReturn;
 	}
 
-	private static String convertStreamToString(InputStream is) {
+	protected static String convertStreamToString(InputStream is) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		StringBuilder sb = new StringBuilder();
 		String line = null;
@@ -92,8 +92,8 @@ public class JSONHandler {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-		}
-		;
+		};
 		return NamesAndLinksToReturn;
 	}
+	
 }
