@@ -3,6 +3,7 @@ package org.ZlatevGichev.SearchRater;
 
 import java.util.ArrayList;
 
+import org.ZlatevGichev.SearchRater.DatabaseHandler;
 import org.junit.Test;
 
 import android.content.Context;
@@ -59,10 +60,13 @@ public class DatabaseHandlerTest extends AndroidTestCase {
 		databaseHandler1.addLink(searchQuery , URL);
 		setUp();
 		db = databaseHandler1.getWritableDatabase();
+		
 		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_BLOCKED_RESULTS
 				+ " WHERE " + KEY_SEARCH_QUERY + "=" + "'" + searchQuery + "'", 
 				null);
-		assertTrue(cursor.moveToFirst());
+		if(cursor.moveToFirst()) {
+			assertEquals("blago",  String.valueOf(cursor.getString(1)));
+		}
 		db.close();
 	}
 
@@ -81,5 +85,5 @@ public class DatabaseHandlerTest extends AndroidTestCase {
 			databaseHandler1.deleteLink(URL);
 			assertFalse(cursor.moveToNext());
 		}
-	} 
+	}
 }
