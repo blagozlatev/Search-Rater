@@ -34,6 +34,7 @@ public class MainActivity extends Activity {
 		final EditText editText = (EditText) findViewById(R.id.editText);
 		final ListView list = (ListView) findViewById(R.id.resultList);
 		Button btnSearch = (Button) findViewById(R.id.btnSearch);
+		Button btnShowAllBlocked = (Button) findViewById(R.id.btnShowAllBlocked);
 
 		btnSearch.setOnClickListener(new OnClickListener() {
 
@@ -48,7 +49,7 @@ public class MainActivity extends Activity {
 					} else {
 						listSetter(list);
 						ArrayList<String> blockedLinks = db
-								.getAllContactsForQuery(editText.getText()
+								.getAllLinksForQuery(editText.getText()
 										.toString());
 						if (!blockedLinks.isEmpty()) {
 							findMatchesAndSetListView(list, blockedLinks);

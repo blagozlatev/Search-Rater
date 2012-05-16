@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
 public class DatabaseHandler extends SQLiteOpenHelper {
 
 	private static final int DATABASE_VERSION = 1;
@@ -23,7 +22,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	@Override
-	public void onCreate(SQLiteDatabase db) { 
+	public void onCreate(SQLiteDatabase db) {
 		String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_BLOCKED_RESULTS
 				+ "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_SEARCH_QUERY
 				+ " TEXT," + KEY_LINK + " TEXT" + ")";
@@ -36,11 +35,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
-	public ArrayList<String> getAllContactsForQuery(String searchQuery) {
+	public ArrayList<String> getAllLinksForQuery(String searchQuery) {
 		ArrayList<String> linkList = new ArrayList<String>();
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_BLOCKED_RESULTS
 				+ " WHERE " + KEY_SEARCH_QUERY + "=" + "'" + searchQuery + "'",
+				null);
+		if (cursor.moveToFirst()) {
+			do {
+				String link = cursor.getString(2);
+				linkList.add(link);
+			} while (cursor.moveToNext());
+		}
+		db.close();
+		return linkList;
+	}
+
+	public ArrayList<String> getAllLinks() {
+		ArrayList<String> linkList = new ArrayList<String>();
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_BLOCKED_RESULTS,
 				null);
 		if (cursor.moveToFirst()) {
 			do {

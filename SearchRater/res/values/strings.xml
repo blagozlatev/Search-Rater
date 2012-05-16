@@ -6,5 +6,6 @@
     <string name="retrieve_error">Didn\'t retrieve any results from Google</string>
     <string name="dialog_title">Instructions</string>
     <string name="dialog_message">To block or unblock a result click and hold it. To open a result just click it.</string>
+    <string name="showAll">Show all blocked results</string>
     
 </resources>
