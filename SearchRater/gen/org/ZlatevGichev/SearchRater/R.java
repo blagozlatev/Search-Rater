@@ -15,8 +15,9 @@ public final class R {
     }
     public static final class id {
         public static final int btnSearch=0x7f050001;
+        public static final int btnShowAllBlocked=0x7f050002;
         public static final int editText=0x7f050000;
-        public static final int resultList=0x7f050002;
+        public static final int resultList=0x7f050003;
     }
     public static final class layout {
         public static final int main=0x7f030000;
@@ -26,7 +27,9 @@ public final class R {
         public static final int dialog_message=0x7f040005;
         public static final int dialog_title=0x7f040004;
         public static final int enter_your_query=0x7f040002;
+        public static final int noBlocked=0x7f040007;
         public static final int retrieve_error=0x7f040003;
         public static final int search=0x7f040001;
+        public static final int showAll=0x7f040006;
     }
 }

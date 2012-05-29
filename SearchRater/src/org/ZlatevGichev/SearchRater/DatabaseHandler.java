@@ -7,7 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
+import android.os.Bundle;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -23,10 +23,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	@Override
-	public void onCreate(SQLiteDatabase db) { 
+	public void onCreate(SQLiteDatabase db) {
 		String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_BLOCKED_RESULTS
 				+ "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_SEARCH_QUERY
-				+ " TEXT," + KEY_LINK + " TEXT" + ")";
+				+ " TEXT," + KEY_LINK + " TEXT)";
 		db.execSQL(CREATE_CONTACTS_TABLE);
 	}
 
@@ -36,16 +36,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
-	public ArrayList<String> getAllContactsForQuery(String searchQuery) {
-		ArrayList<String> linkList = new ArrayList<String>();
+	public ArrayList<Bundle> getAllLinks() {
+		ArrayList<Bundle> linkList = new ArrayList<Bundle>();
 		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_BLOCKED_RESULTS
-				+ " WHERE " + KEY_SEARCH_QUERY + "=" + "'" + searchQuery + "'",
-				null);
+		Cursor cursor = db.rawQuery("SELECT " + KEY_LINK + " FROM "
+				+ TABLE_BLOCKED_RESULTS, null);
 		if (cursor.moveToFirst()) {
 			do {
-				String link = cursor.getString(2);
-				linkList.add(link);
+				String link = cursor.getString(0);
+				Bundle bundle = new Bundle();
+				bundle.putString("link", link);	
+				bundle.putString("title", link.substring(7));
+				linkList.add(bundle);
 			} while (cursor.moveToNext());
 		}
 		db.close();
@@ -56,15 +58,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(KEY_SEARCH_QUERY, searchQuery);
-		values.put(KEY_LINK, link);
+		String linkToAdd[] = link.split("/", 4);
+		values.put(KEY_LINK, linkToAdd[0] + "//" + linkToAdd[2]);
 		db.insert(TABLE_BLOCKED_RESULTS, null, values);
 		db.close();
 	}
 
 	public void deleteLink(String url) {
+		String linkToRemove[] = url.split("/", 4);
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_BLOCKED_RESULTS, KEY_LINK + " = ?",
-				new String[] { url });
+				new String[] { linkToRemove[0] + "//" + linkToRemove[2] });
 		db.close();
 	}
 }

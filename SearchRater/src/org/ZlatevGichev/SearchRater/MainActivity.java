@@ -34,6 +34,7 @@ public class MainActivity extends Activity {
 		final EditText editText = (EditText) findViewById(R.id.editText);
 		final ListView list = (ListView) findViewById(R.id.resultList);
 		Button btnSearch = (Button) findViewById(R.id.btnSearch);
+		Button btnShowAllBlocked = (Button) findViewById(R.id.btnShowAllBlocked);
 
 		btnSearch.setOnClickListener(new OnClickListener() {
 
@@ -46,14 +47,22 @@ public class MainActivity extends Activity {
 								R.string.retrieve_error, Toast.LENGTH_LONG)
 								.show();
 					} else {
-						listSetter(list);
-						ArrayList<String> blockedLinks = db
-								.getAllContactsForQuery(editText.getText()
-										.toString());
-						if (!blockedLinks.isEmpty()) {
-							findMatchesAndSetListView(list, blockedLinks);
-						}
+						listSetter(list, false);
+						getAllBlockedLinksAndSetList(db, list, true);
 					}
+				}
+			}
+		});
+
+		btnShowAllBlocked.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				bundledNamesAndLinks = db.getAllLinks();
+				if (bundledNamesAndLinks.isEmpty()) {
+					Toast.makeText(getApplicationContext(), R.string.noBlocked,
+							Toast.LENGTH_LONG).show();
+				} else {
+					listSetter(list, true);
 				}
 			}
 		});
@@ -79,11 +88,16 @@ public class MainActivity extends Activity {
 					int position, long id) {
 				if (list.isItemChecked(position)) {
 					list.setItemChecked(position, false);
+
+					getAllBlockedLinksAndSetList(db, list, false);
+					
 					db.deleteLink(getLinkFromBundle(position));
+					
 				} else {
 					list.setItemChecked(position, true);
 					db.addLink(getSearchQueryForBundle(),
 							getLinkFromBundle(position));
+					getAllBlockedLinksAndSetList(db, list, true);
 				}
 				return true;
 			}
@@ -105,11 +119,11 @@ public class MainActivity extends Activity {
 	}
 
 	private void findMatchesAndSetListView(ListView list,
-			ArrayList<String> blockedLinks) {
+			ArrayList<String> blockedLinks, boolean block) {
 		for (int i = 0; i < blockedLinks.size(); i++) {
 			for (int k = 0; k < bundledNamesAndLinks.size(); k++) {
-				if (blockedLinks.get(i).equals(getLinkFromBundle(k))) {
-					list.setItemChecked(k, true);
+				if (getLinkFromBundle(k).startsWith(blockedLinks.get(i))) {
+						list.setItemChecked(k, block);
 				}
 			}
 		}
@@ -127,7 +141,7 @@ public class MainActivity extends Activity {
 		return bundledNamesAndLinks.get(0).getString("search_query");
 	}
 
-	private void listSetter(ListView list) {
+	private void listSetter(ListView list, boolean all) {
 		ArrayList<String> titles = new ArrayList<String>();
 		for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
 			titles.add(getTitleForLink(i));
@@ -137,5 +151,23 @@ public class MainActivity extends Activity {
 				android.R.layout.simple_list_item_single_choice, titles);
 		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		list.setAdapter(adapter);
+		if (all) {
+			for (int i = 0; i < list.getCount(); i++) {
+				list.setItemChecked(i, true);
+			}
+		}
+	}
+
+	private void getAllBlockedLinksAndSetList(final DatabaseHandler db,
+			final ListView list, boolean block) {
+		ArrayList<Bundle> allBlocked = db.getAllLinks();
+		ArrayList<String> blockedLinks = new ArrayList<String>();
+		for (int i = 0; i < allBlocked.size(); i++) {
+			blockedLinks.add(allBlocked.get(i).getString("link"));
+		}				
+		
+		if (!blockedLinks.isEmpty()) {
+			findMatchesAndSetListView(list, blockedLinks, block);
+		}
 	}
 }

@@ -7,5 +7,7 @@
     <string name="retrieve_error">Не бяха получени никакви резултати от Google</string>
     <string name="dialog_message">За да блокирате или отблокирате резултат просто го задръжте. За да отворите резултат просто го натиснете.</string>
     <string name="dialog_title">Инструкции</string>
+    <string name="showAll">Покажи всички блокирани</string>
+    <string name="noBlocked">Няма блокирани сайтове</string>
 
 </resources>
