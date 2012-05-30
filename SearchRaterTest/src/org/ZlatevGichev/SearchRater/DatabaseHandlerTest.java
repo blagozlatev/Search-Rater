@@ -35,22 +35,20 @@ public class DatabaseHandlerTest extends AndroidTestCase {
 	public void testGetAllLinks() throws Throwable {
 		ArrayList<Bundle> testBundle = new ArrayList<Bundle>();
 		Bundle bundle = new Bundle();
-		String title = "www.abv.bg";
-		String url = "http://www.abv.bg";
+		String title = "www.alfaromeo.com";
+		String url = "http://www.alfaromeo.com";
 		
 		bundle.putString("title", title);
 		bundle.putString("link", url);
 		testBundle.add(bundle);
-		
+
 		setUp();
 		DatabaseHandler dbHandlerForLinks = databaseHandler;
-		
-		dbHandlerForLinks.addLink(title, url);
+
 		ArrayList<Bundle> linkLists = dbHandlerForLinks.getAllLinks();
 		assertEquals(testBundle.toString(), linkLists.toString());
-		if ( linkLists.isEmpty() == false) {
-			dbHandlerForLinks.deleteLink(url);
-		}
+		assertTrue(!linkLists.isEmpty());
+
 	}
 
 
