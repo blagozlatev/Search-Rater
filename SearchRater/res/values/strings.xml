@@ -4,9 +4,10 @@
     <string name="search">Search</string>
     <string name="enter_your_query">Enter your query</string>
     <string name="retrieve_error">Didn\'t retrieve any results from Google</string>
-    <string name="dialog_title">Instructions</string>
-    <string name="dialog_message">To block or unblock a result click and hold it. To open a result just click it.</string>
-    <string name="showAll">Show all blocked results</string>
-    <string name="noBlocked">There are no blocked sites</string>
+    <string name="intsructions_title">Instructions</string>
+    <string name="instructions_message">To block or unblock a result click and hold it. To open a result just click it.</string>
+    <string name="show_all">Show all blocked results</string>
+    <string name="error">Error</string>
+    <string name="no_blocked">There are no blocked links</string>
     
 </resources>

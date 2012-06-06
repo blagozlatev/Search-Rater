@@ -5,9 +5,10 @@
     <string name="search">Търси</string>
     <string name="enter_your_query">Въведете заявката си</string>
     <string name="retrieve_error">Не бяха получени никакви резултати от Google</string>
-    <string name="dialog_message">За да блокирате или отблокирате резултат просто го задръжте. За да отворите резултат просто го натиснете.</string>
-    <string name="dialog_title">Инструкции</string>
-    <string name="showAll">Покажи всички блокирани</string>
-    <string name="noBlocked">Няма блокирани сайтове</string>
+    
+    <string name="intsructions_title">Инструкции</string><string name="instructions_message">За да блокирате или отблокирате резултат просто го задръжте. За да отворите резултат просто го натиснете.</string>
+    <string name="show_all">Покажи всички блокирани</string>
+    <string name="error">Грешка</string>
+    <string name="no_blocked">Няма блокирани връзки</string>
 
 </resources>

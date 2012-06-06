@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -28,42 +27,50 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		instructionDialogCreator();
+		dialogCreator(R.string.intsructions_title,
+				R.string.instructions_message);
 
 		final DatabaseHandler db = new DatabaseHandler(this);
 		final EditText editText = (EditText) findViewById(R.id.editText);
 		final ListView list = (ListView) findViewById(R.id.resultList);
-		Button btnSearch = (Button) findViewById(R.id.btnSearch);
-		Button btnShowAllBlocked = (Button) findViewById(R.id.btnShowAllBlocked);
+		final Button btnSearch = (Button) findViewById(R.id.btnSearch);
+		final Button btnShowAllBlocked = (Button) findViewById(R.id.btnShowAllBlocked);
 
 		btnSearch.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
+				btnSearch.setCursorVisible(false);
+				btnSearch.setClickable(false);
+				bundledNamesAndLinks.clear();
 				if (!editText.getText().equals("")) {
 					bundledNamesAndLinks = JSONHandler
 							.getResultsFromJSON(editText.getText().toString());
 					if (bundledNamesAndLinks.isEmpty()) {
-						Toast.makeText(getApplicationContext(),
-								R.string.retrieve_error, Toast.LENGTH_LONG)
-								.show();
+						dialogCreator(R.string.error, R.string.retrieve_error);
 					} else {
 						listSetter(list, false);
 						getAllBlockedLinksAndSetList(db, list, true);
 					}
 				}
+				btnSearch.setClickable(true);
+				btnSearch.setCursorVisible(true);
 			}
 		});
 
 		btnShowAllBlocked.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
+				btnShowAllBlocked.setCursorVisible(false);
+				btnShowAllBlocked.setClickable(false);
+				bundledNamesAndLinks.clear();
 				bundledNamesAndLinks = db.getAllLinks();
 				if (bundledNamesAndLinks.isEmpty()) {
-					Toast.makeText(getApplicationContext(), R.string.noBlocked,
-							Toast.LENGTH_LONG).show();
+					dialogCreator(R.string.error, R.string.no_blocked);
 				} else {
 					listSetter(list, true);
 				}
+				btnShowAllBlocked.setCursorVisible(true);
+				btnShowAllBlocked.setClickable(true);
 			}
 		});
 
@@ -86,29 +93,34 @@ public class MainActivity extends Activity {
 
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				String linkSplit[] = getLinkFromBundle(position).split("/", 4);
+				String linkToUse = linkSplit[0] + "//" + linkSplit[2];
 				if (list.isItemChecked(position)) {
-					list.setItemChecked(position, false);
-
-					getAllBlockedLinksAndSetList(db, list, false);
-					
-					db.deleteLink(getLinkFromBundle(position));
-					
+					setListForSingleLink(list, linkToUse, false);
+					db.deleteLink(linkToUse);
 				} else {
-					list.setItemChecked(position, true);
-					db.addLink(getSearchQueryForBundle(),
-							getLinkFromBundle(position));
-					getAllBlockedLinksAndSetList(db, list, true);
+					setListForSingleLink(list, linkToUse, true);
+					db.addLink(linkToUse);
 				}
 				return true;
+			}
+
+			private void setListForSingleLink(final ListView list,
+					String linkToUse, boolean block) {
+				for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
+					if (getLinkFromBundle(i).startsWith(linkToUse)) {
+						list.setItemChecked(i, block);
+					}
+				}
 			}
 		});
 
 	}
 
-	private void instructionDialogCreator() {
+	private void dialogCreator(int title, int message) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.dialog_title);
-		builder.setMessage(R.string.dialog_message);
+		builder.setTitle(title);
+		builder.setMessage(message);
 		builder.setPositiveButton(android.R.string.ok,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
@@ -123,7 +135,7 @@ public class MainActivity extends Activity {
 		for (int i = 0; i < blockedLinks.size(); i++) {
 			for (int k = 0; k < bundledNamesAndLinks.size(); k++) {
 				if (getLinkFromBundle(k).startsWith(blockedLinks.get(i))) {
-						list.setItemChecked(k, block);
+					list.setItemChecked(k, block);
 				}
 			}
 		}
@@ -135,10 +147,6 @@ public class MainActivity extends Activity {
 
 	protected String getLinkFromBundle(int position) {
 		return bundledNamesAndLinks.get(position).getString("link");
-	}
-
-	protected String getSearchQueryForBundle() {
-		return bundledNamesAndLinks.get(0).getString("search_query");
 	}
 
 	private void listSetter(ListView list, boolean all) {
@@ -164,8 +172,8 @@ public class MainActivity extends Activity {
 		ArrayList<String> blockedLinks = new ArrayList<String>();
 		for (int i = 0; i < allBlocked.size(); i++) {
 			blockedLinks.add(allBlocked.get(i).getString("link"));
-		}				
-		
+		}
+
 		if (!blockedLinks.isEmpty()) {
 			findMatchesAndSetListView(list, blockedLinks, block);
 		}

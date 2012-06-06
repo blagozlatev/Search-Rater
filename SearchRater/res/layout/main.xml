@@ -21,7 +21,7 @@
         android:id="@+id/btnShowAllBlocked"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/showAll" />
+        android:text="@string/show_all" />
 
     <ListView
         android:id="@+id/resultList"

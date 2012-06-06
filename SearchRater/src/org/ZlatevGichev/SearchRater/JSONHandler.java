@@ -80,9 +80,6 @@ public class JSONHandler {
 			JSONArray jsonArray = json.getJSONArray("items");
 			for (int i = 0; i < jsonArray.length(); i++) {
 				Bundle bundle = new Bundle();
-				if (i == 0) {
-					bundle.putString("search_query", searchQuery);
-				}
 				bundle.putString("title",
 						jsonArray.getJSONObject(i).getString("title")
 								.toString());
@@ -92,8 +89,9 @@ public class JSONHandler {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-		};
+		}
+		;
 		return NamesAndLinksToReturn;
 	}
-	
+
 }

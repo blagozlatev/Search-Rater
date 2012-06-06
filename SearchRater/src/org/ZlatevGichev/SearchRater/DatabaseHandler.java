@@ -14,8 +14,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 	private static final String DATABASE_NAME = "blockedLinksByWords";
 	private static final String TABLE_BLOCKED_RESULTS = "blocked_results";
-	private static final String KEY_ID = "id";
-	private static final String KEY_SEARCH_QUERY = "search_query";
 	private static final String KEY_LINK = "link";
 
 	public DatabaseHandler(Context context) {
@@ -25,8 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_BLOCKED_RESULTS
-				+ "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_SEARCH_QUERY
-				+ " TEXT," + KEY_LINK + " TEXT)";
+				+ "(" + KEY_LINK + " TEXT PRIMARY KEY)";
 		db.execSQL(CREATE_CONTACTS_TABLE);
 	}
 
@@ -54,21 +51,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return linkList;
 	}
 
-	public void addLink(String searchQuery, String link) {
+	public void addLink(String link) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put(KEY_SEARCH_QUERY, searchQuery);
-		String linkToAdd[] = link.split("/", 4);
-		values.put(KEY_LINK, linkToAdd[0] + "//" + linkToAdd[2]);
+		values.put(KEY_LINK, link);
 		db.insert(TABLE_BLOCKED_RESULTS, null, values);
 		db.close();
 	}
 
-	public void deleteLink(String url) {
-		String linkToRemove[] = url.split("/", 4);
+	public void deleteLink(String link) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_BLOCKED_RESULTS, KEY_LINK + " = ?",
-				new String[] { linkToRemove[0] + "//" + linkToRemove[2] });
+				new String[] { link });
 		db.close();
 	}
 }
