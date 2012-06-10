@@ -9,5 +9,7 @@
     <string name="show_all">Show all blocked results</string>
     <string name="error">Error</string>
     <string name="no_blocked">There are no blocked links</string>
+    <string name="get_results">Getting results</string>
+    <string name="get_blocked">Getting blocked results</string>
     
 </resources>

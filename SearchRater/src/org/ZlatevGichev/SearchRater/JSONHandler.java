@@ -12,6 +12,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +25,12 @@ public class JSONHandler {
 
 	protected static JSONObject connectAndGetJSON(String searchQuery) {
 		String url = convertSearchQueryToURL(searchQuery);
-		HttpClient httpclient = new DefaultHttpClient();
+		
+		HttpParams httpParameters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParameters, 4000);
+		HttpConnectionParams.setSoTimeout(httpParameters, 4000);
+		
+		HttpClient httpclient = new DefaultHttpClient(httpParameters);
 		HttpGet httpget = new HttpGet(url);
 		HttpResponse response;
 		JSONObject json = new JSONObject();

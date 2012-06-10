@@ -1,9 +1,9 @@
 package org.ZlatevGichev.SearchRater;
 
 import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -21,15 +21,15 @@ import android.widget.ListView;
 public class MainActivity extends Activity {
 
 	static ArrayList<Bundle> bundledNamesAndLinks = new ArrayList<Bundle>();
+	private ProgressDialog progressDialog;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		dialogCreator(R.string.intsructions_title,
-				R.string.instructions_message);
-
+		dialogCreator(getString(R.string.intsructions_title),
+				getString(R.string.instructions_message));
 		final DatabaseHandler db = new DatabaseHandler(this);
 		final EditText editText = (EditText) findViewById(R.id.editText);
 		final ListView list = (ListView) findViewById(R.id.resultList);
@@ -39,38 +39,36 @@ public class MainActivity extends Activity {
 		btnSearch.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				btnSearch.setCursorVisible(false);
 				btnSearch.setClickable(false);
-				bundledNamesAndLinks.clear();
+				createProgressDialog(4000, getString(R.string.get_results), btnSearch);
 				if (!editText.getText().equals("")) {
 					bundledNamesAndLinks = JSONHandler
 							.getResultsFromJSON(editText.getText().toString());
 					if (bundledNamesAndLinks.isEmpty()) {
-						dialogCreator(R.string.error, R.string.retrieve_error);
+						dialogCreator(getString(R.string.error),
+								getString(R.string.retrieve_error));
 					} else {
 						listSetter(list, false);
 						getAllBlockedLinksAndSetList(db, list, true);
 					}
 				}
-				btnSearch.setClickable(true);
-				btnSearch.setCursorVisible(true);
 			}
 		});
 
 		btnShowAllBlocked.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				btnShowAllBlocked.setCursorVisible(false);
 				btnShowAllBlocked.setClickable(false);
-				bundledNamesAndLinks.clear();
-				bundledNamesAndLinks = db.getAllLinks();
-				if (bundledNamesAndLinks.isEmpty()) {
-					dialogCreator(R.string.error, R.string.no_blocked);
+				if (db.isEmpty()) {
+					list.setAdapter(null);
+					dialogCreator(getString(R.string.error),
+							getString(R.string.no_blocked));
+					btnShowAllBlocked.setClickable(true);
 				} else {
+					bundledNamesAndLinks = db.getAllLinks();
+					createProgressDialog(500, getString(R.string.get_blocked), btnShowAllBlocked);
 					listSetter(list, true);
 				}
-				btnShowAllBlocked.setCursorVisible(true);
-				btnShowAllBlocked.setClickable(true);
 			}
 		});
 
@@ -104,20 +102,20 @@ public class MainActivity extends Activity {
 				}
 				return true;
 			}
-
-			private void setListForSingleLink(final ListView list,
-					String linkToUse, boolean block) {
-				for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
-					if (getLinkFromBundle(i).startsWith(linkToUse)) {
-						list.setItemChecked(i, block);
-					}
-				}
-			}
 		});
 
 	}
 
-	private void dialogCreator(int title, int message) {
+	private void setListForSingleLink(final ListView list,
+			final String linkToUse, boolean block) {
+		for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
+			if (getLinkFromBundle(i).startsWith(linkToUse)) {
+				list.setItemChecked(i, block);
+			}
+		}
+	}
+	
+	private void dialogCreator(final String title, final String message) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(title);
 		builder.setMessage(message);
@@ -130,8 +128,8 @@ public class MainActivity extends Activity {
 		builder.create().show();
 	}
 
-	private void findMatchesAndSetListView(ListView list,
-			ArrayList<String> blockedLinks, boolean block) {
+	private void setListForAllLinks(ListView list,
+			final ArrayList<String> blockedLinks, final boolean block) {
 		for (int i = 0; i < blockedLinks.size(); i++) {
 			for (int k = 0; k < bundledNamesAndLinks.size(); k++) {
 				if (getLinkFromBundle(k).startsWith(blockedLinks.get(i))) {
@@ -141,18 +139,18 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	protected String getTitleForLink(int position) {
+	protected String getTitleFromBundle(final int position) {
 		return bundledNamesAndLinks.get(position).getString("title");
 	}
 
-	protected String getLinkFromBundle(int position) {
+	protected String getLinkFromBundle(final int position) {
 		return bundledNamesAndLinks.get(position).getString("link");
 	}
 
-	private void listSetter(ListView list, boolean all) {
+	private void listSetter(ListView list, final boolean all) {
 		ArrayList<String> titles = new ArrayList<String>();
 		for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
-			titles.add(getTitleForLink(i));
+			titles.add(getTitleFromBundle(i));
 		}
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 				getBaseContext(),
@@ -167,7 +165,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void getAllBlockedLinksAndSetList(final DatabaseHandler db,
-			final ListView list, boolean block) {
+			final ListView list, final boolean block) {
 		ArrayList<Bundle> allBlocked = db.getAllLinks();
 		ArrayList<String> blockedLinks = new ArrayList<String>();
 		for (int i = 0; i < allBlocked.size(); i++) {
@@ -175,7 +173,24 @@ public class MainActivity extends Activity {
 		}
 
 		if (!blockedLinks.isEmpty()) {
-			findMatchesAndSetListView(list, blockedLinks, block);
+			setListForAllLinks(list, blockedLinks, block);
 		}
+	}
+
+	private void createProgressDialog(final int milliseconds,
+			final String message, final Button button) {
+		progressDialog = ProgressDialog.show(MainActivity.this, "", message);
+
+		new Thread() {
+			public void run() {
+				try {
+					sleep(milliseconds);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				progressDialog.dismiss();
+				button.setClickable(true);
+			}
+		}.start();
 	}
 }

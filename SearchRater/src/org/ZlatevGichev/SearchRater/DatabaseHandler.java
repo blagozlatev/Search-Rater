@@ -42,7 +42,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			do {
 				String link = cursor.getString(0);
 				Bundle bundle = new Bundle();
-				bundle.putString("link", link);	
+				bundle.putString("link", link);
 				bundle.putString("title", link.substring(7));
 				linkList.add(bundle);
 			} while (cursor.moveToNext());
@@ -64,5 +64,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.delete(TABLE_BLOCKED_RESULTS, KEY_LINK + " = ?",
 				new String[] { link });
 		db.close();
+	}
+
+	public boolean isEmpty() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cur = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_BLOCKED_RESULTS, null);
+		if (cur != null) {
+			cur.moveToFirst();
+			if (cur.getInt(0) == 0) {
+				db.close();
+				return true;
+			}
+		}
+		db.close();
+		return false;
 	}
 }

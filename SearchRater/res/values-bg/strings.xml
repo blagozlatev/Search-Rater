@@ -10,5 +10,7 @@
     <string name="show_all">Покажи всички блокирани</string>
     <string name="error">Грешка</string>
     <string name="no_blocked">Няма блокирани връзки</string>
+    <string name="get_results">Взимат се резултати</string>
+    <string name="get_blocked">Взимат се блокираните резултати</string>
 
 </resources>
