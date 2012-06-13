@@ -1,3 +1,5 @@
+
+
 package org.ZlatevGichev.SearchRater;
 
 
@@ -38,14 +40,17 @@ public class MainActivityTest extends
 				solo.clickOnText("OK");
 				solo.clickOnText("Show all blocked results");
 				
-				Assert.assertTrue(solo.searchText("www.alfaromeo.com"));
+				Assert.assertTrue(solo.searchText("There are no blocked links"));
 				
+				solo.clickOnText("OK");
 				solo.enterText(0, "Alfa Romeo");
 				solo.clickOnButton("Search");
-				solo.clickInList(1);
-				solo.clickLongInList(2);
+				solo.waitForText("Getting results");
+
+				solo.clickLongInList(1); //first result is blocked
+				solo.clickLongInList(2); //second result is blocked
 				
-				Assert.assertTrue(solo.searchText("Alfa Romeo Australia")); //first result is blocked
+				Assert.assertTrue(solo.searchText("Alfa Romeo Australia")); 
 				
 				solo.clickOnButton("Show all blocked results");
 				
@@ -53,6 +58,7 @@ public class MainActivityTest extends
 				
 				solo.clickOnButton("Search");
 				solo.clickInList(2);
+				solo.clickLongInList(1); // first result is unblocked
 				solo.clickLongInList(2); // second result is unblocked
 				solo.clickInList(2);
 				
@@ -71,7 +77,7 @@ public class MainActivityTest extends
 				setUp();
 				testBundle.putString("title", "Alfa Romeo");
 				MainActivity.bundledNamesAndLinks.add(0, testBundle);
-				String testGetTitle = mainActivity.getTitleForLink(0);
+				String testGetTitle = mainActivity.getTitleFromBundle(0);
 				assertEquals(MainActivity.bundledNamesAndLinks.get(0).getString("title"), testGetTitle);
 			}
 
@@ -82,13 +88,20 @@ public class MainActivityTest extends
 				MainActivity.bundledNamesAndLinks.add(0, testBundle);
 				String testGetLink = mainActivity.getLinkFromBundle(0);
 				assertEquals(MainActivity.bundledNamesAndLinks.get(0).getString("link"), testGetLink);
-			}
+			} 
 
-			public void testGetSearchQueryForBundle() throws Exception {
+			/*public void testSetListForSingleLink () throws Exception {
+				setUp();
+				testBundle.putString("link", "www.abv.bg");
+				MainActivity.bundledNamesAndLinks.add(0, testBundle);
+				
+				mainActivity.setListForSingleLink(list, "www.abv.bg", true);
+			}
+			/*public void testGetSearchQueryForBundle() throws Exception {
 				setUp();
 				testBundle.putString("search_query", "Alfa");
 				MainActivity.bundledNamesAndLinks.add(0, testBundle);
 				String testGetSearchQuery = mainActivity.getSearchQueryForBundle();
 				assertEquals(MainActivity.bundledNamesAndLinks.get(0).getString("search_query"), testGetSearchQuery);
-			}
+			}*/
 }
