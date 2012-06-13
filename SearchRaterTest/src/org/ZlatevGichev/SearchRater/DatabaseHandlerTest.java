@@ -26,12 +26,10 @@ public class DatabaseHandlerTest extends AndroidTestCase {
 	private DatabaseHandler databaseHandler1;
 	private DatabaseHandler databaseHandler;
 	private static final String TABLE_BLOCKED_RESULTS = "blocked_results";
-	private static final String KEY_SEARCH_QUERY = "search_query";
 	private static final String KEY_LINK = "link";
 	private Context context_1;
 	SQLiteDatabase db;
-
-
+	
 	public void testGetAllLinks() throws Throwable {
 		ArrayList<Bundle> testBundle = new ArrayList<Bundle>();
 		Bundle bundle = new Bundle();
@@ -45,46 +43,87 @@ public class DatabaseHandlerTest extends AndroidTestCase {
 		setUp();
 		DatabaseHandler dbHandlerForLinks = databaseHandler;
 
+		dbHandlerForLinks.addLink(url);
+		
 		ArrayList<Bundle> linkLists = dbHandlerForLinks.getAllLinks();
+		
 		assertEquals(testBundle.toString(), linkLists.toString());
 		assertTrue(!linkLists.isEmpty());
-
+		
+		dbHandlerForLinks.deleteLink(url);
 	}
 
 
 	public void testAddLink() throws Throwable {
-		String searchQuery = "blago";
 		String URL = "http://www.abv.bg";
 		
-		databaseHandler1.addLink(searchQuery , URL);
 		setUp();
+		databaseHandler1.addLink(URL);
+		
 		db = databaseHandler1.getWritableDatabase();
 		
-		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_BLOCKED_RESULTS
-				+ " WHERE " + KEY_SEARCH_QUERY + "=" + "'" + searchQuery + "'", 
-				null);
-		if(cursor.moveToFirst()) {
-			assertEquals("http://www.abv.bg",  String.valueOf(cursor.getString(2)));
-			databaseHandler1.deleteLink(URL);
+		Cursor cursor = db.rawQuery("SELECT " + KEY_LINK + " FROM "
+				+ TABLE_BLOCKED_RESULTS, null);
+		if (cursor.moveToFirst()) {
+			do {
+				String link = cursor.getString(0);
+				assertEquals("http://www.abv.bg",  link);
+				databaseHandler1.deleteLink(URL);
+			} while (cursor.moveToNext());
 		}
 		db.close();
 	}
 
 
 	 public void testDeleteLink() throws Throwable {
-		String searchQuery = "krasi"; 
-		String URL = "http://www.google.com/";
-
-		databaseHandler1.addLink(searchQuery, URL);
+		String link, URL = "http://www.google.com/";
+		ArrayList<Bundle> emptyList = new ArrayList<Bundle>();
+		
 		setUp();
+		databaseHandler1.addLink(URL);
+		
 		db = databaseHandler1.getWritableDatabase();
 		
-		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_BLOCKED_RESULTS
-				 + " WHERE " + KEY_LINK + "=" + "'" + URL + "'", 
-				 null);
-		databaseHandler1.deleteLink(URL);
-		if(cursor.moveToFirst()) {
-			assertFalse(cursor.moveToNext());
+		Cursor cursor = db.rawQuery("SELECT " + KEY_LINK + " FROM "
+				+ TABLE_BLOCKED_RESULTS, null);
+		
+		if (cursor.moveToFirst()) {
+			do {
+				link = cursor.getString(0);
+				assertEquals("http://www.google.com/",  link);
+				databaseHandler1.deleteLink(URL);
+			} while (cursor.moveToNext());
+			
+		assertEquals(emptyList, databaseHandler1.getAllLinks());
 		}
+	}
+	public void testIsEmpty() throws Throwable {
+		boolean bool;
+			setUp();
+			databaseHandler1.addLink("www.abv.bg");
+			
+			db = databaseHandler1.getWritableDatabase();
+			
+			Cursor cur = db.rawQuery("SELECT " + KEY_LINK + " FROM "
+					+ TABLE_BLOCKED_RESULTS, null);
+			
+			if(cur != null) {
+				cur.moveToFirst();
+				if(cur.getInt(0) == 0) {
+					db.close();
+					bool = true;
+					assertTrue(bool);
+				}
+			}
+			db.close();
+			bool = false;
+			
+			assertFalse(bool);
+			assertFalse(databaseHandler1.isEmpty());
+			
+			databaseHandler1.deleteLink("www.abv.bg");
+			
+			assertTrue(databaseHandler1.isEmpty());
+
 	}
 }

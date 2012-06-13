@@ -54,7 +54,7 @@ public class JSONHandler {
 	}
 
 	protected static String convertSearchQueryToURL(String searchQuery) {
-		String baseUrl = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCZI07EqEqZJUOTX_yDGRFsuBzHseo3WRo&cx=013036536707430787589:_pqjad5hr1a&q=";
+		String baseUrl = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCYLfuVS63QDAJCcXDh_gvRbObMEPRgqAI&cx=013036536707430787589:_pqjad5hr1a&q=";
 		String endURL = "&alt=json";
 		String urlToReturn = baseUrl + searchQuery + endURL;
 		urlToReturn = urlToReturn.replaceAll("\\s+", "%20");
@@ -97,8 +97,7 @@ public class JSONHandler {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-		}
-		;
+		};
 		return NamesAndLinksToReturn;
 	}
 
