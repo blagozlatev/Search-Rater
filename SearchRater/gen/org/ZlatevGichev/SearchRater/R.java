@@ -24,6 +24,7 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
+        public static final int connection_error=0x7f04000b;
         public static final int enter_your_query=0x7f040002;
         public static final int error=0x7f040007;
         public static final int get_blocked=0x7f04000a;

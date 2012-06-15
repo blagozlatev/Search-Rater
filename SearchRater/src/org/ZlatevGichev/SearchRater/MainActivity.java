@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -39,18 +42,25 @@ public class MainActivity extends Activity {
 		btnSearch.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				btnSearch.setClickable(false);
-				createProgressDialog(4000, getString(R.string.get_results), btnSearch);
-				if (!editText.getText().equals("")) {
-					bundledNamesAndLinks = JSONHandler
-							.getResultsFromJSON(editText.getText().toString());
-					if (bundledNamesAndLinks.isEmpty()) {
-						dialogCreator(getString(R.string.error),
-								getString(R.string.retrieve_error));
-					} else {
-						listSetter(list, false);
-						getAllBlockedLinksAndSetList(db, list, true);
+				if (isConnectionAvailable()) {
+					btnSearch.setClickable(false);
+					progressDialogCreator(4000,
+							getString(R.string.get_results), btnSearch);
+					if (!editText.getText().equals("")) {
+						bundledNamesAndLinks = JSONHandler
+								.getResultsFromJSON(editText.getText()
+										.toString());
+						if (bundledNamesAndLinks.isEmpty()) {
+							dialogCreator(getString(R.string.error),
+									getString(R.string.retrieve_error));
+						} else {
+							listSetter(list, false);
+							getAllBlockedLinksAndSetList(db, list, true);
+						}
 					}
+				} else {
+					dialogCreator(getString(R.string.error),
+							getString(R.string.connection_error));
 				}
 			}
 		});
@@ -66,7 +76,8 @@ public class MainActivity extends Activity {
 					btnShowAllBlocked.setClickable(true);
 				} else {
 					bundledNamesAndLinks = db.getAllLinks();
-					createProgressDialog(500, getString(R.string.get_blocked), btnShowAllBlocked);
+					progressDialogCreator(500, getString(R.string.get_blocked),
+							btnShowAllBlocked);
 					listSetter(list, true);
 				}
 			}
@@ -79,10 +90,16 @@ public class MainActivity extends Activity {
 				if (!list.isItemChecked(position)) {
 					list.setItemChecked(position, true);
 				} else {
-					list.setItemChecked(position, false);
-					Intent i = new Intent(android.content.Intent.ACTION_VIEW,
-							Uri.parse(getLinkFromBundle(position)));
-					startActivity(i);
+					if (isConnectionAvailable()) {
+						list.setItemChecked(position, false);
+						Intent i = new Intent(
+								android.content.Intent.ACTION_VIEW, Uri
+										.parse(getLinkFromBundle(position)));
+						startActivity(i);
+					} else {
+						dialogCreator(getString(R.string.error),
+								getString(R.string.connection_error));
+					}
 				}
 			}
 		});
@@ -114,7 +131,7 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
-	
+
 	private void dialogCreator(final String title, final String message) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(title);
@@ -177,10 +194,9 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private void createProgressDialog(final int milliseconds,
+	private void progressDialogCreator(final int milliseconds,
 			final String message, final Button button) {
 		progressDialog = ProgressDialog.show(MainActivity.this, "", message);
-
 		new Thread() {
 			public void run() {
 				try {
@@ -192,5 +208,12 @@ public class MainActivity extends Activity {
 				button.setClickable(true);
 			}
 		}.start();
+	}
+
+	private boolean isConnectionAvailable() {
+		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager
+				.getActiveNetworkInfo();
+		return activeNetworkInfo != null;
 	}
 }

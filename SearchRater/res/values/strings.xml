@@ -11,5 +11,6 @@
     <string name="no_blocked">There are no blocked links</string>
     <string name="get_results">Getting results</string>
     <string name="get_blocked">Getting blocked results</string>
+    <string name="connection_error">There is no internet connection</string>
     
 </resources>

@@ -12,5 +12,6 @@
     <string name="no_blocked">Няма блокирани връзки</string>
     <string name="get_results">Взимат се резултати</string>
     <string name="get_blocked">Взимат се блокираните резултати</string>
+    <string name="connection_error">Няма връзка към интернет</string>
 
 </resources>
