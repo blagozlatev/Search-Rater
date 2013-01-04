@@ -212,8 +212,8 @@ public class MainActivity extends Activity {
 
 	private boolean isConnectionAvailable() {
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetworkInfo = connectivityManager
+		NetworkInfo activeNetworkInformation = connectivityManager
 				.getActiveNetworkInfo();
-		return activeNetworkInfo != null;
+		return activeNetworkInformation != null;
 	}
 }
