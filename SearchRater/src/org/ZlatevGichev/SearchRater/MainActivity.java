@@ -67,11 +67,13 @@ public class MainActivity extends Activity {
 
 		btnShowAllBlocked.setOnClickListener(new OnClickListener() {
 
-			public void onClick(View v) {				
+			public void onClick(View v) {
+				btnShowAllBlocked.setClickable(false);
 				if (db.isEmpty()) {
 					list.setAdapter(null);
 					dialogCreator(getString(R.string.error),
-							getString(R.string.no_blocked));					
+							getString(R.string.no_blocked));
+					btnShowAllBlocked.setClickable(true);
 				} else {
 					bundledNamesAndLinks = db.getAllLinks();
 					progressDialogCreator(500, getString(R.string.get_blocked),

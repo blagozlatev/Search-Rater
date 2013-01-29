@@ -19,15 +19,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 
-public class JSONHandler extends AsyncTask {
+public class JSONHandler {
 
 	protected static JSONObject connectAndGetJSON(String searchQuery) {
-		String url = convertSearchQueryToURL(searchQuery);			
+		String url = convertSearchQueryToURL(searchQuery);
 		
-		HttpClient httpclient = new DefaultHttpClient();
+		HttpParams httpParameters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParameters, 4000);
+		HttpConnectionParams.setSoTimeout(httpParameters, 4000);
+		
+		HttpClient httpclient = new DefaultHttpClient(httpParameters);
 		HttpGet httpget = new HttpGet(url);
 		HttpResponse response;
 		JSONObject json = new JSONObject();
@@ -96,12 +99,6 @@ public class JSONHandler extends AsyncTask {
 			e.printStackTrace();
 		};
 		return NamesAndLinksToReturn;
-	}
-
-	@Override
-	protected Object doInBackground(Object... params) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
