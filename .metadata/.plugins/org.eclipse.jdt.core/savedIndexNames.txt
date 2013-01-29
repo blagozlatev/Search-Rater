@@ -1,0 +1,4 @@
+INDEX VERSION 1.126+D:\Programming\Eclipse-Android-Workspace\Search-Rater\.metadata\.plugins\org.eclipse.jdt.core
+1081220453.index
+1536310789.index
+2746527666.index
