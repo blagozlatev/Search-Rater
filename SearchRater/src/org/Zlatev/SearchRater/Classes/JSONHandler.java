@@ -1,4 +1,4 @@
-package org.ZlatevGichev.SearchRater;
+package org.Zlatev.SearchRater.Classes;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,6 +1,10 @@
-package org.ZlatevGichev.SearchRater;
+package org.Zlatev.SearchRater.Activities;
 
 import java.util.ArrayList;
+
+import org.Zlatev.SearchRater.R;
+import org.Zlatev.SearchRater.Classes.DatabaseHandler;
+import org.Zlatev.SearchRater.Classes.JSONHandler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
