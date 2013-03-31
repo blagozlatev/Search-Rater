@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Extracts string &apos;RandomText&apos; into R.string.randomtext" description="Extracts string &apos;RandomText&apos; into R.string.randomtext" file="/intentTest/res/layout/activity_main.xml" flags="6" id="com.android.ide.eclipse.adt.refactoring.extract.string" mode="EDIT_SOURCE" proj="/intentTest" rplc-all-java="false" rplc-all-xml="false" sel-end="661" sel-start="637" stamp="1362906612952" tok-esc="RandomText" xml-attr-name="android:hint"/>
-</session>

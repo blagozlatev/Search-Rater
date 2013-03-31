@@ -1,9 +1,0 @@
-INDEX VERSION 1.126+D:\Programming\Eclipse-Android-Workspace\Search-Rater\.metadata\.plugins\org.eclipse.jdt.core
-1536310789.index
-3015927397.index
-1143683242.index
-3733832246.index
-183464128.index
-3352491446.index
-3572883183.index
-2751382638.index
