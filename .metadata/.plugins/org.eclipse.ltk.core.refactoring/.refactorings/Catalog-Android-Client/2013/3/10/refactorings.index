@@ -1,0 +1,30 @@
+1362319234110	Delete element
+1362319543132	Move compilation unit
+1362320287422	Extracts string 'Add Bottle' into R.string.add_bottle
+1362320293368	Extracts string 'Show Bottle' into R.string.show_bottle
+1362320297133	Extracts string 'Show All Bottles' into R.string.show_all_bottles
+1362487925738	Extracts string 'Add Bottle' into R.string.add_bottle
+1362493823550	Delete element
+1362501279332	Extracts string 'Select Image' into R.string.select_image
+1362501283359	Extracts string 'Continent' into R.string.continent
+1362501285560	Extracts string 'Note' into R.string.note
+1362501288044	Extracts string 'Manufacturer' into R.string.manufacturer
+1362501289829	Extracts string 'Country' into R.string.country
+1362501291925	Extracts string 'City' into R.string.city
+1362501297619	Extracts string 'Material' into R.string.material
+1362501299663	Extracts string 'Colour' into R.string.colour
+1362501302468	Extracts string 'Shape' into R.string.shape
+1362501304148	Extracts string 'Name' into R.string.name
+1362501307525	Extracts string 'Shell' into R.string.shell
+1362501309349	Extracts string 'Age' into R.string.age
+1362501312713	Extracts string 'Content' into R.string.content
+1362501314622	Extracts string 'Alcohol' into R.string.alcohol
+1362501317717	Extracts string 'Alcohol Type' into R.string.alcohol_type
+1362501319726	Extracts string 'ID' into R.string.id
+1362501539244	Extracts string 'Bottle Image' into R.string.bottle_image
+1362502122015	Delete element
+1362504387798	Delete element
+1362506774810	Extract method 'getImageFilePath'
+1362585541113	Extracts string 'Send Bottle' into R.string.send_bottle
+1362585553833	Extracts string 'Clear Fields' into R.string.clear_fields
+1362813320747	Delete element

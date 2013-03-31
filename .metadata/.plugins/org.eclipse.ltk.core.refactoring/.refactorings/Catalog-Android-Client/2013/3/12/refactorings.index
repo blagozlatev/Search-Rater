@@ -1,0 +1,15 @@
+1363500862611	Extracts string 'ID: ' into R.string.id_
+1363502548866	Extracts string 'Alcohol Type: ' into R.string.alcohol_type_
+1363502591376	Extracts string 'Alcohol: ' into R.string.alcohol_
+1363502709379	Extracts string 'Content: ' into R.string.content_
+1363502723701	Extracts string 'Age: ' into R.string.age_
+1363502737409	Extracts string 'Shell: ' into R.string.shell_
+1363502752136	Extracts string 'Name: ' into R.string.name_
+1363502790721	Extracts string 'Shape: ' into R.string.shape_
+1363502809137	Extracts string 'Colour: ' into R.string.colour_
+1363502823318	Extracts string 'Material: ' into R.string.material_
+1363502835954	Extracts string 'Manufacturer: ' into R.string.manufacturer_
+1363502854281	Extracts string 'City: ' into R.string.city_
+1363502864916	Extracts string 'Country: ' into R.string.country_
+1363502881822	Extracts string 'Note: ' into R.string.note_
+1363502913925	Extracts string 'Continent: ' into R.string.continent_

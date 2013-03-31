@@ -12,21 +12,25 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.os.AsyncTask;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
-public class JSONHandler extends AsyncTask {
+public class JSONHandler {
+	ProgressDialog dialog;
+	String searchQuery;
+
+	public JSONHandler(String query, ProgressDialog loadDialog) {
+		searchQuery = query;
+		dialog = loadDialog;
+	}
 
 	protected static JSONObject connectAndGetJSON(String searchQuery) {
-		String url = convertSearchQueryToURL(searchQuery);			
-		
+		String url = convertSearchQueryToURL(searchQuery);
+
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpGet httpget = new HttpGet(url);
 		HttpResponse response;
@@ -85,23 +89,16 @@ public class JSONHandler extends AsyncTask {
 			JSONArray jsonArray = json.getJSONArray("items");
 			for (int i = 0; i < jsonArray.length(); i++) {
 				Bundle bundle = new Bundle();
-				bundle.putString("title",
-						jsonArray.getJSONObject(i).getString("title")
-								.toString());
-				bundle.putString("link",
-						jsonArray.getJSONObject(i).getString("link").toString());
+				bundle.putString("title", jsonArray.getJSONObject(i).getString("title")
+						.toString());
+				bundle.putString("link", jsonArray.getJSONObject(i).getString("link")
+						.toString());
 				NamesAndLinksToReturn.add(bundle);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-		};
+		}
+		;
 		return NamesAndLinksToReturn;
 	}
-
-	@Override
-	protected Object doInBackground(Object... params) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

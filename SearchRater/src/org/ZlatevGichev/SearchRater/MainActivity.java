@@ -1,6 +1,7 @@
 package org.ZlatevGichev.SearchRater;
 
 import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -24,7 +25,6 @@ import android.widget.ListView;
 public class MainActivity extends Activity {
 
 	static ArrayList<Bundle> bundledNamesAndLinks = new ArrayList<Bundle>();
-	private ProgressDialog progressDialog;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -43,39 +43,63 @@ public class MainActivity extends Activity {
 
 			public void onClick(View v) {
 				if (isConnectionAvailable()) {
-					btnSearch.setClickable(false);
-					progressDialogCreator(4000,
-							getString(R.string.get_results), btnSearch);
 					if (!editText.getText().equals("")) {
-						bundledNamesAndLinks = JSONHandler
-								.getResultsFromJSON(editText.getText()
-										.toString());
-						if (bundledNamesAndLinks.isEmpty()) {
-							dialogCreator(getString(R.string.error),
-									getString(R.string.retrieve_error));
-						} else {
-							listSetter(list, false);
-							getAllBlockedLinksAndSetList(db, list, true);
-						}
+						new Thread(new Runnable() {
+							ProgressDialog dialog;
+
+							public void run() {
+								MainActivity.this.runOnUiThread(new Runnable() {
+									public void run() {
+										dialog = new ProgressDialog(MainActivity.this);
+										dialog.setCancelable(false);
+										dialog.setIndeterminate(true);
+										dialog.setTitle("Please wait!");
+										dialog.setMessage("Please wait!");
+										dialog.show();
+									}
+								});
+								bundledNamesAndLinks = JSONHandler.getResultsFromJSON(editText
+										.getText().toString());
+
+								MainActivity.this.runOnUiThread(new Runnable() {
+									public void run() {
+										if (bundledNamesAndLinks.isEmpty()) {
+											dialogCreator(getString(R.string.error),
+													getString(R.string.retrieve_error));
+										} else {
+
+											listSetter(list, false);
+											getAllBlockedLinksAndSetList(db, list, true);
+											if (dialog.isShowing()) {
+												dialog.cancel();
+											}
+										}
+									}
+								});
+							}
+						}).start();
+					} else {
+						dialogCreator(getString(R.string.error),
+								"Search field must not be empty!");
 					}
 				} else {
-					dialogCreator(getString(R.string.error),
-							getString(R.string.connection_error));
+					dialogCreator(getString(R.string.error), "No internet connection!");
 				}
 			}
 		});
 
 		btnShowAllBlocked.setOnClickListener(new OnClickListener() {
 
-			public void onClick(View v) {				
+			public void onClick(View v) {
 				if (db.isEmpty()) {
 					list.setAdapter(null);
 					dialogCreator(getString(R.string.error),
-							getString(R.string.no_blocked));					
+							getString(R.string.no_blocked));
 				} else {
 					bundledNamesAndLinks = db.getAllLinks();
-					progressDialogCreator(500, getString(R.string.get_blocked),
-							btnShowAllBlocked);
+
+					// progressDialogCreator(500, getString(R.string.get_blocked),
+					// btnShowAllBlocked);
 					listSetter(list, true);
 				}
 			}
@@ -83,16 +107,15 @@ public class MainActivity extends Activity {
 
 		list.setOnItemClickListener(new OnItemClickListener() {
 
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
 				if (!list.isItemChecked(position)) {
 					list.setItemChecked(position, true);
 				} else {
 					if (isConnectionAvailable()) {
 						list.setItemChecked(position, false);
-						Intent i = new Intent(
-								android.content.Intent.ACTION_VIEW, Uri
-										.parse(getLinkFromBundle(position)));
+						Intent i = new Intent(android.content.Intent.ACTION_VIEW, Uri
+								.parse(getLinkFromBundle(position)));
 						startActivity(i);
 					} else {
 						dialogCreator(getString(R.string.error),
@@ -167,8 +190,7 @@ public class MainActivity extends Activity {
 		for (int i = 0; i < bundledNamesAndLinks.size(); i++) {
 			titles.add(getTitleFromBundle(i));
 		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-				getBaseContext(),
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(),
 				android.R.layout.simple_list_item_single_choice, titles);
 		list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		list.setAdapter(adapter);
@@ -190,22 +212,6 @@ public class MainActivity extends Activity {
 		if (!blockedLinks.isEmpty()) {
 			setListForAllLinks(list, blockedLinks, block);
 		}
-	}
-
-	private void progressDialogCreator(final int milliseconds,
-			final String message, final Button button) {
-		progressDialog = ProgressDialog.show(MainActivity.this, "", message);
-		new Thread() {
-			public void run() {
-				try {
-					sleep(milliseconds);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				progressDialog.dismiss();
-				button.setClickable(true);
-			}
-		}.start();
 	}
 
 	private boolean isConnectionAvailable() {
