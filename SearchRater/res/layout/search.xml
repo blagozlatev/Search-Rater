@@ -2,20 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:layout_weight="1" >
-    <Button
-        android:id="@+id/btnSearchActivity"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/editText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/search" 
-        android:layout_weight="50"/>
+        android:hint="@string/enter_your_query"
+        android:inputType="textUri" />
 
     <Button
-        android:id="@+id/btnShowAllActivity"
+        android:id="@+id/btnSearch"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/show_all" 
-        android:layout_weight="50"/>
+        android:text="@string/search" />
+
+    <ListView
+        android:id="@+id/resultList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
